@@ -28,7 +28,7 @@ bool isCloseBracket(char* token);
 bool isBracket(char* token);
 int precedence(char* token);
 
-// Experession Evaluator Functions
+// Expression Evaluator Functions
 Queue_t toPostfix(Queue_t infix_tokens);
 int evalExpr(Queue_t postfix_tokens);
 
@@ -164,7 +164,7 @@ Queue_t tokenize(char* expression)
 }
 
 //********************************************
-//  In-fix experession --> Post-fix expression
+//  In-fix expression --> Post-fix expression
 //
 // NOTE: a valid expression for this module may only contain:
 //		 -- integer or symbolic operands
@@ -232,10 +232,57 @@ Queue_t toPostfix(Queue_t infix_tokens)
 // PRE: postfix contains a valid post-fix algebraic expression, as defined above
 // 		  Variable substitutions still need to be performed.
 // POST: returns the result of evaluating the post-fix expression.
-int evalExpr(Queue_t expression)
+int evalExpr(Queue_t queue)
 {
+int a,b;
+char c;
+char * expression;
+IntStack_t stack = istackCreate();
 
-	printf("NOT IMPLEMENTED YET -- that's your job ;-)\n");
-	return -1;  // STUB
+while(qIsEmpty(queue) != 1)
+{
+	expression = qDequeue(&queue);
+	
+	if(isOperand(expression) == 1)
+	{
+		a = operandValue(expression);
+		istackPush(&stack, a);
+	}
+	else
+	{
+		assert (isOperator(expression) == 1);
+		assert (istackIsEmpty(stack) != 1);
+		c = symbol(expression);
+		a = istackPop(&stack);
+		b = istackPop(&stack);
+		if(c== '*')
+		{
+			int x = a*b;
+			istackPush(&stack, x);
+		}
+		
+		if(c== '/')
+		{
+			int x = b/a;
+			istackPush(&stack, x);
+		}
+		
+		if(c== '+')
+		{
+			int x = a+b;
+			istackPush(&stack, x);
+		}
+		
+		if(c== '-')
+		{
+			int x = b-a;
+			istackPush(&stack, x);
+		}
+		
+	}
+}
+int answer = istackPop(&stack);
 
+
+return answer;
 }
